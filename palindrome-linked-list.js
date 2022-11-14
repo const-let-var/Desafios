@@ -1,5 +1,8 @@
 const assert = require('assert')
 
+// space O(1)
+// time O(n)
+
 function ListNode(val, next) {
     this.val = (val === undefined ? 0 : val)
     this.next = (next === undefined ? null : next)
