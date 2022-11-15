@@ -26,7 +26,6 @@ function fill(arr) {
 var middleNode = function (head) {
     let fast = head
     let slow = head
-    let length = 0
 
     while (fast) {
         length++
