@@ -84,15 +84,21 @@ var solveSudoku = function (board) {
         for (const comb of bank) {
 
             for (let index = 0; index < max; index++) {
+                
                 if(board[row][index] === '.'){
                     continue
                 }
+
                 if(board[row][index] !== comb[index]){
                     skip = true
                     break
                 }
 
+            }
+
+            for (let index = 0; index < max; index++) {
                 for (let i = 0; i < solution.length; i++) {
+
                    if(solution[i][index] === comb[index]){
                     skip = true
                     break
