@@ -1,5 +1,4 @@
 const assert = require('assert')
-const { format } = require('path')
 
 var solveSudoku = function (board) {
     const hash = new Map()
@@ -37,42 +36,28 @@ var solveSudoku = function (board) {
 
     do {
         key = iterator1.next().value
-        if (key) bank.push(key.split(''))
+        if (key) {
+            bank.push(key.split(''))
+        }
     } while (key)
 
     let found = false
+    let reminder
 
-    const is3x3Valid = (startI,startJ)=>{
-        for (let i = startI; i < startI+3; i++) {
-            for (let j = startJ; j < startJ+3; j++) {
-                for (let ii = startI; ii < startI+3; ii++) {
-                    for (let jj = startJ; jj < startJ+3; jj++) {
-                        if(solution[i][j]===solution[ii][jj]){
-                            return false
-                        }
-                    }
+    const is2x3Valid = (startJ, item, row) => {
+
+        reminder = row % 3
+
+        for (let i = solution.length - reminder; i < solution.length; i++) {
+            for (let j = startJ; j < startJ + 3; j++) {
+                if (solution[i][j] === item) {
+                    return false
                 }
             }
         }
         return true
     }
 
-    const isSolutionValid = (solution) => {
-
-        if (solution.length % 3 !== 0){
-            return true
-        }
-
-        for (let i = 0; i < solution.length; i+=3) {
-            for (let j = 0; j < solution[0].length; j+=3) {
-                return is3x3Valid(i,j)
-            } 
-        }
-        
-        return true
-    }
-
-    let dd = 0
     let skip = false
 
     const solve = (row) => {
@@ -81,55 +66,82 @@ var solveSudoku = function (board) {
             return
         }
 
-        for (const comb of bank) {
+        for (let bi = 0; bi < bank.length; bi++) {
+
+            skip = false
 
             for (let index = 0; index < max; index++) {
-                
-                if(board[row][index] === '.'){
-                    continue
-                }
 
-                if(board[row][index] !== comb[index]){
+                if (board[row][index] !== '.' && board[row][index] !== bank[bi][index]) {
                     skip = true
                     break
                 }
 
-            }
-
-            for (let index = 0; index < max; index++) {
                 for (let i = 0; i < solution.length; i++) {
 
-                   if(solution[i][index] === comb[index]){
-                    skip = true
-                    break
-                   }
+                    if (solution[i][index] === bank[bi][index]) {
+                        skip = true
+                        break
+                    }
+
                 }
+
+                if (skip) {
+                    break
+                }
+
+                for (let i = 0; i < board.length; i++) {
+
+                    if (row !== i && board[i][index] === bank[bi][index]) {
+                        skip = true
+                        break
+                    }
+
+                }
+
+
+                if (row % 3 !== 0) {
+
+                    if (index < 3) {
+                        if (!is2x3Valid(0, bank[bi][index], row)) {
+                            skip = true
+                            break
+                        }
+                    } else if (index < 6) {
+                        if (!is2x3Valid(3, bank[bi][index], row)) {
+                            skip = true
+                            break
+                        }
+                    } else {
+                        if (!is2x3Valid(6, bank[bi][index], row)) {
+                            skip = true
+                            break
+                        }
+                    }
+                }
+
             }
 
-            if(skip){
-                skip = false
+            if (skip) {
                 continue
             }
 
-            solution.push(comb)
+            //console.log(row)
 
-            if (isSolutionValid(solution)) {
+            solution.push(bank[bi])
 
-                if (row === board.length - 1) {
-                    found = true
-                    break
-                }
-
-                solve(row + 1)
-
+            if (row === board.length - 1) {
+                found = true
+                break
             }
+
+            solve(row + 1)
 
             if (found) break
             solution.pop()
         }
-        
-    }
 
+    }
 
     solve(0)
 
@@ -137,25 +149,25 @@ var solveSudoku = function (board) {
 }
 
 assert.deepEqual(solveSudoku([
-    ["5","3",".",".","7",".",".",".","."],
-    ["6",".",".","1","9","5",".",".","."],
-    [".","9","8",".",".",".",".","6","."],
-    ["8",".",".",".","6",".",".",".","3"],
-    ["4",".",".","8",".","3",".",".","1"],
-    ["7",".",".",".","2",".",".",".","6"],
-    [".","6",".",".",".",".","2","8","."],
-    [".",".",".","4","1","9",".",".","5"],
-    [".",".",".",".","8",".",".","7","9"]
+    ["5", "3", ".", ".", "7", ".", ".", ".", "."],
+    ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+    [".", "9", "8", ".", ".", ".", ".", "6", "."],
+    ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+    ["4", ".", ".", "8", ".", "3", ".", ".", "1"],
+    ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+    [".", "6", ".", ".", ".", ".", "2", "8", "."],
+    [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+    [".", ".", ".", ".", "8", ".", ".", "7", "9"]
 ]),
-[
-    ["5","3","4","6","7","8","9","1","2"],
-    ["6","7","2","1","9","5","3","4","8"],
-    ["1","9","8","3","4","2","5","6","7"],
-    ["8","5","9","7","6","1","4","2","3"],
-    ["4","2","6","8","5","3","7","9","1"],
-    ["7","1","3","9","2","4","8","5","6"],
-    ["9","6","1","5","3","7","2","8","4"],
-    ["2","8","7","4","1","9","6","3","5"],
-    ["3","4","5","2","8","6","1","7","9"]
-]
+    [
+        ["5", "3", "4", "6", "7", "8", "9", "1", "2"],
+        ["6", "7", "2", "1", "9", "5", "3", "4", "8"],
+        ["1", "9", "8", "3", "4", "2", "5", "6", "7"],
+        ["8", "5", "9", "7", "6", "1", "4", "2", "3"],
+        ["4", "2", "6", "8", "5", "3", "7", "9", "1"],
+        ["7", "1", "3", "9", "2", "4", "8", "5", "6"],
+        ["9", "6", "1", "5", "3", "7", "2", "8", "4"],
+        ["2", "8", "7", "4", "1", "9", "6", "3", "5"],
+        ["3", "4", "5", "2", "8", "6", "1", "7", "9"]
+    ]
 )
