@@ -4,16 +4,31 @@ var solveSudoku = function (board) {
     const hash = new Map()
     let used = false
     let hasProperLength = false
-    const bank = []
+    const bankHash = new Map()
     const max = 9
     const solution = []
+    let skip = false
 
     const fillBank = (number) => {
         used = hash.has(number)
         hasProperLength = number.length == max
 
         if (!used && hasProperLength) {
-            hash.set(number)
+
+            for (let i = 0; i < max; i++) {
+                skip = false
+                for (let j = 0; j < max; j++) {
+                    if (board[i][j] !== '.' && board[i][j] !== number[j]) {
+                        skip = true
+                        break
+                    }
+                }
+
+                if(!skip){
+                    hash.set(number,i)
+                }
+            }
+
             return
         } else if (hasProperLength) {
             return
@@ -33,11 +48,18 @@ var solveSudoku = function (board) {
 
     let iterator1 = hash.keys()
     let key
+    let rowKey
 
     do {
         key = iterator1.next().value
         if (key) {
-            bank.push(key.split(''))
+            rowKey = hash.get(key)
+
+            if(!bankHash.has(rowKey)){
+                bankHash.set(rowKey, [key.split('')])
+            }else{
+                bankHash.get(rowKey).push(key.split(''))
+            }
         }
     } while (key)
 
@@ -58,13 +80,13 @@ var solveSudoku = function (board) {
         return true
     }
 
-    let skip = false
-
     const solve = (row) => {
 
         if (row === board.length) {
             return
         }
+
+        const bank = bankHash.get(row)
 
         for (let bi = 0; bi < bank.length; bi++) {
 
