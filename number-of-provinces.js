@@ -15,19 +15,21 @@ Return the total number of provinces.
 //M[i][j] == M[j][i]
 var findCircleNum = function (M) {
 
-    function find(nodes, i) {
+    function findRoot(nodes, i) {
         if (nodes[i] == -1)
             return i
 
-        return find(nodes, nodes[i])
+        return findRoot(nodes, nodes[i])
     }
 
     function union(nodes, i, j) {
-        const node = find(nodes, i)
-        const parent = find(nodes, j)
+        const root_connected_i = findRoot(nodes, i)
+        const root_connected_j = findRoot(nodes, j)
 
-        if (node != parent)
-            nodes[node] = parent;
+        if (root_connected_i != root_connected_j){
+            nodes[root_connected_i] = root_connected_j
+        }
+            
     }
 
     // graph node is index, it's parent is value
