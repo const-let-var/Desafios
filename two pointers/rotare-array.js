@@ -7,6 +7,9 @@ var rotate = function (nums, k) {
 
     const max = nums.length - 1
     const length = nums.length
+    let shifted = null
+    let tmp = null
+    let prev = null
 
     if (k > length) {
         const reminder = k % length
@@ -16,9 +19,10 @@ var rotate = function (nums, k) {
     }
 
     const walk = (from) => {
-        let shifted = from
-        let tmp = null
-        let prev = nums[from]
+        shifted = from
+        tmp = null
+        prev = nums[from]
+
         do {
             shifted = shifted + k
 
@@ -32,7 +36,7 @@ var rotate = function (nums, k) {
         } while (shifted !== from)
     }
 
-    function gcd(a, b) {
+    const gcd = (a, b) => {
         if (b === 0) {
             return a;
         }
@@ -48,6 +52,8 @@ var rotate = function (nums, k) {
     return nums
 };
 
+assert.deepEqual(rotate([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 5),
+    [11, 12, 13, 14, 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 assert.deepEqual(rotate([1, 2, 3, 4, 5, 6], 4), [3, 4, 5, 6, 1, 2])
 assert.deepEqual(rotate([1, 2, 3, 4, 5, 6], 2), [5, 6, 1, 2, 3, 4])
 assert.deepEqual(rotate([1, 2, 3], 1), [3, 1, 2])
