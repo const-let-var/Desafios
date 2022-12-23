@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+/.idea/Desafios.iml
+/.idea/jsLibraryMappings.xml
+/.idea/modules.xml
+/.idea/vcs.xml

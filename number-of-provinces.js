@@ -16,7 +16,7 @@ Return the total number of provinces.
 var findCircleNum = function (M) {
 
     function findRoot(nodes, i) {
-        if (nodes[i] == -1)
+        if (nodes[i] === -1)
             return i
 
         return findRoot(nodes, nodes[i])
@@ -26,7 +26,7 @@ var findCircleNum = function (M) {
         const root_connected_i = findRoot(nodes, i)
         const root_connected_j = findRoot(nodes, j)
 
-        if (root_connected_i != root_connected_j){
+        if (root_connected_i !== root_connected_j){
             nodes[root_connected_i] = root_connected_j
         }
             
@@ -43,7 +43,7 @@ var findCircleNum = function (M) {
         }
     }
 
-    // node without parent it's parent itself
+    // node without parent its parent itself
     // number of parent nodes = number of groups
     return nodes.filter(el => el === -1).length
 }
